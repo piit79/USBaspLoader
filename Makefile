@@ -19,6 +19,8 @@ lock:	firmware
 update:	updater
 	$(MAKE) -C updater flash
 
+ff:	flash fuse
+
 firmware: do_firmware
 updater: do_updater
 
