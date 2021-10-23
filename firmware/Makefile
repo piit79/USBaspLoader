@@ -16,6 +16,8 @@
 #     make flash   # to load the boot loader into flash
 #     make lock    # to protect the boot loader from overwriting
 
+SHELL := /bin/bash
+
 include ../Makefile.inc
 
 # Remove the -fno-* options when you use gcc 3, it does not understand them
@@ -38,28 +40,24 @@ main.o: main.c $(DEPENDS)
 
 flash:	all
 	$(ECHO) "."
-	$(AVRDUDE) -U flash:w:main.hex:i
-	$(ECHO) "."
+	$(AVRDUDE) -U flash:w:main.hex:i 2>&1 | ${avrdude_color}; exit $${PIPESTATUS[0]}
 	$(ECHO) "."
 
 readflash:
 	$(ECHO) "."
-	$(AVRDUDE) -U flash:r:read.hex:i
-	$(ECHO) "."
+	$(AVRDUDE) -U flash:r:read.hex:i 2>&1 | ${avrdude_color}; exit $${PIPESTATUS[0]}
 	$(ECHO) "."
 
 
 fuse:
 	$(ECHO) "."
-	$(AVRDUDE) $(FUSEOPT)
-	$(ECHO) "."
+	$(AVRDUDE) $(FUSEOPT) 2>&1 | ${avrdude_color}; exit $${PIPESTATUS[0]}
 	$(ECHO) "."
 
 
 lock:
 	$(ECHO) "."
-	$(AVRDUDE) $(LOCKOPT)
-	$(ECHO) "."
+	$(AVRDUDE) $(LOCKOPT) 2>&1 | ${avrdude_color}; exit $${PIPESTATUS[0]}
 	$(ECHO) "."
 
 

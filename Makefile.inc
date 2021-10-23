@@ -5,6 +5,15 @@
 # Tabsize: 4
 # License: GNU GPL v2 (see License.txt)
 
+RRED := $(shell /bin/echo -e "\e[0;31m")
+RBRN := $(shell /bin/echo -e "\e[0;33m")
+RYEL := $(shell /bin/echo -e "\e[0;93m")
+RGRN := $(shell /bin/echo -e "\e[0;32m")
+CRES := $(shell /bin/echo -e "\e[0m")
+
+avrdude_color := sed -e 's/\(.*\(error\|failed\).*\)/${RRED}\1${CRES}/; s/\(.*\(erasing\|writing\|verifying\).*\)/${RYEL}\1${CRES}/; s/\(.*\(initialized\|written\|verified\).*\)/${RGRN}\1${CRES}/; /\(erase cycle will be performed\|To disable this feature\)/d; N;/avrdude done.  Thank you./!P;D'
+
+
 F_CPU = 16000000
 DEVICE = atmega328p
 
