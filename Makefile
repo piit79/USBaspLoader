@@ -5,6 +5,8 @@
 # Tabsize: 4
 # License: GNU GPL v2 (see License.txt)
 
+SHELL := /bin/bash
+
 include Makefile.inc
 
 set_tmpfile = $(eval TMPFILE=$(shell mktemp))
@@ -25,16 +27,22 @@ ff:	flash fuse
 
 loop:	firmware
 	@echo
-	@while read -p "Press Enter to flash..." r; do make ff; echo; done
+	@while read -p "${RGRN}Press Enter to flash...${CRES}" r; do \
+		if ! make ff; then \
+			echo; \
+			echo "${RRED}Flashing failed!${CRES}"; \
+		fi; \
+		echo; \
+	done
 
 test:
 	$(set_tmpfile)
-	$(AVRDUDE) 2>&1 | tee $(TMPFILE)
+	$(AVRDUDE) 2>&1 | tee $(TMPFILE) | ${avrdude_color}
 	@if grep "Fuses OK (${CORRECT_FUSES})" $(TMPFILE) >/dev/null; then \
-		echo "Fuses correct, probably FLASHED."; \
+		echo "${RGRN}Fuses correct, probably FLASHED.${CRES}"; \
 	else \
 		if ! grep error $(TMPFILE) >/dev/null; then \
-			read -p "Fuses NOT OK (${CORRECT_FUSES}), probably NOT FLASHED. Flash now? [Y/n]" r; \
+			read -p "${RRED}Fuses NOT CORRECT (${CORRECT_FUSES}), probably NOT FLASHED.${CRES} Flash now? [Y/n]" r; \
 			if [ "x$$r" = "xY" ] || [ "x$$r" = "xy" ] || [ "x$$r" = "x" ]; then \
 				make ff; \
 			fi; \
