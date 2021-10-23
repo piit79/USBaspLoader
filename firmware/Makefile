@@ -41,24 +41,20 @@ main.o: main.c $(DEPENDS)
 flash:	all
 	$(ECHO) "."
 	$(AVRDUDE) -U flash:w:main.hex:i 2>&1 | ${avrdude_color}; exit $${PIPESTATUS[0]}
-	$(ECHO) "."
 
 readflash:
 	$(ECHO) "."
 	$(AVRDUDE) -U flash:r:read.hex:i 2>&1 | ${avrdude_color}; exit $${PIPESTATUS[0]}
-	$(ECHO) "."
 
 
 fuse:
 	$(ECHO) "."
 	$(AVRDUDE) $(FUSEOPT) 2>&1 | ${avrdude_color}; exit $${PIPESTATUS[0]}
-	$(ECHO) "."
 
 
 lock:
 	$(ECHO) "."
 	$(AVRDUDE) $(LOCKOPT) 2>&1 | ${avrdude_color}; exit $${PIPESTATUS[0]}
-	$(ECHO) "."
 
 
 read_fuses:

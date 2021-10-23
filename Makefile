@@ -40,6 +40,7 @@ test:
 	$(AVRDUDE) 2>&1 | tee $(TMPFILE) | ${avrdude_color}
 	@if grep "Fuses OK (${CORRECT_FUSES})" $(TMPFILE) >/dev/null; then \
 		echo "${RGRN}Fuses correct, probably FLASHED.${CRES}"; \
+		echo; \
 	else \
 		if ! grep error $(TMPFILE) >/dev/null; then \
 			read -p "${RRED}Fuses NOT CORRECT (${CORRECT_FUSES}), probably NOT FLASHED.${CRES} Flash now? [Y/n]" r; \
