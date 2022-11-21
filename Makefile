@@ -37,7 +37,7 @@ loop:	firmware
 
 test:
 	$(set_tmpfile)
-	$(AVRDUDE) 2>&1 | tee $(TMPFILE) | ${avrdude_color}
+	@$(AVRDUDE) 2>&1 | tee $(TMPFILE) | ${avrdude_color}
 	@if grep "Fuses OK (${CORRECT_FUSES})" $(TMPFILE) >/dev/null; then \
 		echo "${RGRN}Fuses correct, probably FLASHED.${CRES}"; \
 		echo; \
