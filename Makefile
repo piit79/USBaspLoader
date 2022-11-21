@@ -15,15 +15,17 @@ CORRECT_FUSES := E:FF, H:C0, L:1F
 all: do_firmware do_updater
 
 flash:	firmware
+	@echo "Flashing firmware..."
 	$(MAKE) -C firmware flash
 fuse:	firmware
+	@echo "Setting fuses..."
 	$(MAKE) -C firmware fuse
 lock:	firmware
 	$(MAKE) -C firmware lock
 update:	updater
 	$(MAKE) -C updater flash
 
-ff:	flash fuse
+ff:	flash fuse test
 
 loop:	firmware
 	@echo
@@ -36,6 +38,7 @@ loop:	firmware
 	done
 
 test:
+	@echo "Verifying fuses..."
 	$(set_tmpfile)
 	@$(AVRDUDE) 2>&1 | tee $(TMPFILE) | ${avrdude_color}
 	@if grep "Fuses OK (${CORRECT_FUSES})" $(TMPFILE) >/dev/null; then \
