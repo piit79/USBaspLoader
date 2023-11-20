@@ -9,8 +9,9 @@ SHELL := /bin/bash
 
 include Makefile.inc
 
-set_tmpfile = $(eval TMPFILE=$(shell mktemp))
-CORRECT_FUSES := E:FF, H:C0, L:1F
+set_tmpfile = $(eval TMPFILE := $(shell mktemp))
+# CORRECT_FUSES := E:FF, H:C0, L:1F
+CORRECT_FUSES := 0x1f 0xc0 0xff
 
 all: do_firmware do_updater
 
@@ -40,13 +41,14 @@ loop:	firmware
 test:
 	@echo "Verifying fuses..."
 	$(set_tmpfile)
-	@$(AVRDUDE) 2>&1 | tee $(TMPFILE) | ${avrdude_color}
-	@if grep "Fuses OK (${CORRECT_FUSES})" $(TMPFILE) >/dev/null; then \
-		echo "${RGRN}Fuses correct, probably FLASHED.${CRES}"; \
+	@$(AVRDUDE) -U lfuse:r:-:h -U hfuse:r:-:h -U efuse:r:-:h 2>&1 | tee $(TMPFILE) | ${avrdude_color}
+	@FUSES=$$(egrep ^0x $(TMPFILE) | xargs); \
+	if [ "$$FUSES" = "${CORRECT_FUSES}" ]; then \
+		echo "${RGRN}Fuses correct ($$FUSES), probably FLASHED.${CRES}"; \
 		echo; \
 	else \
 		if ! grep error $(TMPFILE) >/dev/null; then \
-			read -p "${RRED}Fuses NOT CORRECT (${CORRECT_FUSES}), probably NOT FLASHED.${CRES} Flash now? [Y/n]" r; \
+			read -p "${RRED}Fuses NOT CORRECT ($$FUSES != ${CORRECT_FUSES}), probably NOT FLASHED.${CRES} Flash now? [Y/n]" r; \
 			if [ "x$$r" = "xY" ] || [ "x$$r" = "xy" ] || [ "x$$r" = "x" ]; then \
 				make ff; \
 			fi; \
