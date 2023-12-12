@@ -11,7 +11,7 @@ include Makefile.inc
 
 set_tmpfile = $(eval TMPFILE := $(shell mktemp))
 # CORRECT_FUSES := E:FF, H:C0, L:1F
-CORRECT_FUSES := 0x1f 0xc0 0xff
+CORRECT_FUSES := 0x1f 0xc0
 
 all: do_firmware do_updater
 
@@ -41,7 +41,7 @@ loop:	firmware
 test:
 	@echo "Verifying fuses..."
 	$(set_tmpfile)
-	@$(AVRDUDE) -U lfuse:r:-:h -U hfuse:r:-:h -U efuse:r:-:h 2>&1 | tee $(TMPFILE) | ${avrdude_color}
+	@$(AVRDUDE) -U lfuse:r:-:h -U hfuse:r:-:h 2>&1 | tee $(TMPFILE) | ${avrdude_color}
 	@FUSES=$$(egrep ^0x $(TMPFILE) | xargs); \
 	if [ "$$FUSES" = "${CORRECT_FUSES}" ]; then \
 		echo "${RGRN}Fuses correct ($$FUSES), probably FLASHED.${CRES}"; \
